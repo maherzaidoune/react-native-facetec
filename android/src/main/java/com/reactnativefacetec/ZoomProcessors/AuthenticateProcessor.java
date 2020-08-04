@@ -69,7 +69,7 @@ public class AuthenticateProcessor extends Processor implements ZoomFaceMapProce
                 if (nextStep == UXNextStep.Succeed) {
                     _isSuccess = true;
                     // Dynamically set the success message.
-                    sessionTokenSuccessCallback.onSuccess("Authenticated");
+                    sessionTokenSuccessCallback.onSuccess(responseJSON.toString());
                     ZoomCustomization.overrideResultScreenSuccessMessage = "Authenticated";
                     zoomFaceMapResultCallback.succeed();
                 }

@@ -19,12 +19,17 @@ import {
 export default class App extends React.Component {
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      const eventEmitter = new NativeEventEmitter(NativeModules.Facetec);
-      this.initialize = eventEmitter.addListener('initialize', (event) => {
-        console.log(event);
-      });
+      // const eventEmitter = new NativeEventEmitter(NativeModules.Facetec);
+      // this.initialize = eventEmitter.addListener('initialize', (event) => {
+      //   console.log(event);
+      // });
       setTimeout(() => {
-        init();
+        init(
+          () => {
+            console.log('init ');
+          },
+          () => console.log('init ')
+        );
       }, 500);
     });
   }
@@ -39,7 +44,14 @@ export default class App extends React.Component {
           }}
         >
           <TouchableOpacity
-            onPress={() => init()}
+            onPress={() =>
+              init(
+                (params) => {
+                  console.log('init ' + params);
+                },
+                (error) => console.log('init ' + error)
+              )
+            }
             style={{
               backgroundColor: '#5F6FED',
               padding: 10,
@@ -51,7 +63,14 @@ export default class App extends React.Component {
             <Text style={{ color: '#fff' }}>Init</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => enroll()}
+            onPress={() =>
+              enroll(
+                (params) => {
+                  console.log('init ' + params);
+                },
+                (error) => console.log('init ' + error)
+              )
+            }
             style={{
               backgroundColor: '#5F6FED',
               padding: 10,
@@ -63,7 +82,14 @@ export default class App extends React.Component {
             <Text style={{ color: '#fff' }}>Enroll user</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => livenessCheck()}
+            onPress={() =>
+              livenessCheck(
+                (params) => {
+                  console.log('init ' + params);
+                },
+                (error) => console.log('init ' + error)
+              )
+            }
             style={{
               backgroundColor: '#5F6FED',
               padding: 10,
@@ -75,7 +101,14 @@ export default class App extends React.Component {
             <Text style={{ color: '#fff' }}>Liveness</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => authenticateUser()}
+            onPress={() =>
+              authenticateUser(
+                (params) => {
+                  console.log('init ' + params);
+                },
+                (error) => console.log('init ' + error)
+              )
+            }
             style={{
               backgroundColor: '#5F6FED',
               padding: 10,

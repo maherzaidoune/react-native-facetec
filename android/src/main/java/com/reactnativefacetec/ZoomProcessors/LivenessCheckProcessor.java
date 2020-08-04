@@ -67,7 +67,7 @@ public class LivenessCheckProcessor extends Processor implements ZoomFaceMapProc
 
                 if (nextStep == UXNextStep.Succeed) {
                     _isSuccess = true;
-                    sessionTokenSuccessCallback.onSuccess("LivenessCheckProcessor");
+                    sessionTokenSuccessCallback.onSuccess(responseJSON.toString());
                     ZoomCustomization.overrideResultScreenSuccessMessage = "Liveness\nConfirmed";
                     zoomFaceMapResultCallback.succeed();
                 }

@@ -74,7 +74,7 @@ public class EnrollmentProcessor extends Processor implements ZoomFaceMapProcess
                 if (nextStep == UXNextStep.Succeed) {
                     _isSuccess = true;
                     // Dynamically set the success message.
-                    sessionTokenSuccessCallback.onSuccess("Enrollment\nSuccessful");
+                    sessionTokenSuccessCallback.onSuccess(responseJSON.toString());
                     ZoomCustomization.overrideResultScreenSuccessMessage = "Enrollment\nSuccessful";
                     ZoomGlobalState.isRandomUsernameEnrolled = true;
                     zoomFaceMapResultCallback.succeed();

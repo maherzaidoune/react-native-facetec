@@ -1,20 +1,25 @@
 import { NativeModules } from 'react-native';
 const { Facetec } = NativeModules;
 
-export function init() {
-  Facetec.Init();
+// type Props = {
+//   onSuccess?: (any) => void,
+//   onFail?: (any) => void,
+// };
+
+export function init(onSuccess, onFail) {
+  Facetec.Init(onSuccess, onFail);
 }
 
-export function authenticateUser() {
-  Facetec.AuthenticateUser();
+export function authenticateUser(onSuccess, onFail) {
+  Facetec.AuthenticateUser(onSuccess, onFail);
 }
 
-export function enroll() {
-  Facetec.Enroll();
+export function enroll(onSuccess, onFail) {
+  Facetec.Enroll(onSuccess, onFail);
 }
 
-export function livenessCheck() {
-  Facetec.LivenessCheck();
+export function livenessCheck(onSuccess, onFail) {
+  Facetec.LivenessCheck(onSuccess, onFail);
 }
 
 export default { init, enroll, authenticateUser, livenessCheck };

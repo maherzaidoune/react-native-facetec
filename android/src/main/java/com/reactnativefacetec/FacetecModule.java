@@ -5,6 +5,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -25,6 +26,8 @@ public class FacetecModule extends ReactContextBaseJavaModule {
     private static ReactApplicationContext reactContext = null;
     public Processor latestProcessor;
 
+  Callback onSuccess;
+  Callback onFail;
 
     public FacetecModule(ReactApplicationContext context) {
         // Pass in the context to the constructor and save it so you can emit events
@@ -58,7 +61,9 @@ public class FacetecModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void Init() {
+    public void Init(Callback onSuccess, Callback onFail) {
+      this.onSuccess = onSuccess;
+      this.onFail = onFail;
         ZoomSDK.initialize(
                 reactContext,
                 ZoomGlobalState.DeviceLicenseKeyIdentifier,
@@ -72,62 +77,56 @@ public class FacetecModule extends ReactContextBaseJavaModule {
                         }catch (Exception e){
                             e.printStackTrace();
                         }
-                        if(successful)
-                            params.putBoolean("successful", true);
-                        else
-                            params.putBoolean("successful", false);
-                        emitDeviceEvent("initialize", params);
-                        getCurrentActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(reactContext, "init " + successful, Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        if(successful){
+                          params.putBoolean("successful", true);
+                          onSuccess.invoke(params);
+                        }
+                        else{
+                          onFail.invoke(params);
+                          params.putBoolean("successful", false);
+                        }
+                        //emitDeviceEvent("initialize", params);
                     }
                 }
         );
     }
 
     @ReactMethod
-    public void Enroll() {
+    public void Enroll(Callback onSuccess, Callback onFail) {
+        this.onSuccess = onSuccess;
+        this.onFail = onFail;
         latestProcessor = new EnrollmentProcessor(getCurrentActivity(), sessionTokenErrorCallback, sessionTokenSuccessCallback);
     }
 
     @ReactMethod
-    public void AuthenticateUser() {
+    public void AuthenticateUser(Callback onSuccess, Callback onFail) {
         if(!ZoomGlobalState.isRandomUsernameEnrolled){
             Toast.makeText(reactContext, "Please enroll first before trying authentication." , Toast.LENGTH_SHORT).show();
             return;
         }
+        this.onSuccess = onSuccess;
+        this.onFail = onFail;
         latestProcessor  = new AuthenticateProcessor(getCurrentActivity(), sessionTokenErrorCallback, sessionTokenSuccessCallback);
     }
 
     @ReactMethod
-    public void LivenessCheck() {
+    public void LivenessCheck(Callback onSuccess, Callback onFail) {
+        this.onSuccess = onSuccess;
+        this.onFail = onFail;
         latestProcessor = new LivenessCheckProcessor( getCurrentActivity(), sessionTokenErrorCallback, sessionTokenSuccessCallback);
     }
 
     Processor.SessionTokenErrorCallback sessionTokenErrorCallback = new Processor.SessionTokenErrorCallback() {
         @Override
         public void onError(String msg) {
-            getCurrentActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(reactContext, "Error " + msg , Toast.LENGTH_SHORT).show();
-                }
-            });
+            onFail.invoke(msg);
         }
     };
 
     Processor.SessionTokenSuccessCallback sessionTokenSuccessCallback = new Processor.SessionTokenSuccessCallback() {
         @Override
         public void onSuccess(String msg) {
-            getCurrentActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(reactContext, "Success " + msg , Toast.LENGTH_SHORT).show();
-                }
-            });
+            onSuccess.invoke(msg);
         }
     };
 }
