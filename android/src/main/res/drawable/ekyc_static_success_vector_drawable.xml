@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportHeight="24.0"
+    android:viewportWidth="24.0">
+
+    <group android:name="backCheckmarkGroup"
+        android:pivotX="12"
+        android:pivotY="12"
+        android:scaleX="1.2"
+        android:scaleY="1.2">
+        <path
+            android:name="backCheckmarkPath"
+            android:pathData="M7.35,12.74 l2.79,2.88 l6.51,-6.54"
+            android:strokeColor="#000"
+            android:strokeWidth="4" />
+    </group>
+
+    <group android:name="frontCheckmarkGroup"
+        android:pivotX="12"
+        android:pivotY="12"
+        android:scaleX="1.2"
+        android:scaleY="1.2">
+        <path
+            android:name="frontCheckmarkPath"
+            android:pathData="M7.35,12.74 l2.79,2.88 l6.51,-6.54"
+            android:strokeColor="#000"
+            android:strokeWidth="4" />
+    </group>
+</vector>

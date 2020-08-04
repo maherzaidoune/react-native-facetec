@@ -1,0 +1,23 @@
+<!-- example of an animation that can be used to show ZoOm.  this can be changed to whatever developer would like.
+ this is used inside the calling activity to override the pending transition after the ZoOm activity has been launched -->
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <translate
+        android:fromYDelta="2%p" android:toYDelta="0"
+        android:duration="300"/>
+
+    <scale
+        android:duration="300"
+        android:fromXScale="1.1"
+        android:fromYScale="1.1"
+        android:toXScale="1.0"
+        android:toYScale="1.0"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        />
+
+    <alpha
+        android:duration="300"
+        android:fromAlpha="0.5"
+        android:toAlpha="1.0" />
+
+</set>

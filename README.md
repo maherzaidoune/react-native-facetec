@@ -13,9 +13,6 @@ npm install react-native-facetec
 ```js
 import Facetec from "react-native-facetec";
 
-// ...
-
-const result = await Facetec.multiply(3, 7);
 ```
 
 ## Contributing
