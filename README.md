@@ -42,6 +42,8 @@ authenticateUser(
     (error) => console.log('authenticateUser ' + error)
 )
 ```
+## config
+minSdkVersion = 19
 
 ## Contributing
 
