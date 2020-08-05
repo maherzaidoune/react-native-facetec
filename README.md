@@ -51,6 +51,11 @@ authenticateUser(
 ```
 ## config
 minSdkVersion = 19
+Add your SDK key to ZoomGlobalState.java
+```java
+
+    public static String DeviceLicenseKeyIdentifier = "YOUR_API_KEY";
+```
 
 ## Contributing
 
