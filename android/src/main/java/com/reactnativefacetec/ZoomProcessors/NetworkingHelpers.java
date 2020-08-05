@@ -161,7 +161,7 @@ public class NetworkingHelpers {
     }
 
     // Set up parameters needed to communicate to the API for Liveness + Matching (Authenticate).
-    public static JSONObject getAuthenticateParameters(ZoomSessionResult zoomSessionResult) {
+    public static JSONObject getAuthenticateParameters(String id, ZoomSessionResult zoomSessionResult) {
         String zoomFaceMapBase64 = zoomSessionResult.getFaceMetrics().getFaceMapBase64();
 
         JSONObject parameters = new JSONObject();
@@ -170,7 +170,7 @@ public class NetworkingHelpers {
 
         try {
             targetObject.put("faceMap", zoomFaceMapBase64);
-            sourceObject.put("enrollmentIdentifier", ZoomGlobalState.randomUsername);
+            sourceObject.put("enrollmentIdentifier", id);
             parameters.put("performContinuousLearning", true);
             parameters.put("target", targetObject);
             parameters.put("source", sourceObject);
@@ -199,7 +199,7 @@ public class NetworkingHelpers {
         String sessionId = zoomIDScanResult.getIDScanMetrics().getSessionId();
         JSONObject parameters = new JSONObject();
         try {
-            parameters.put("enrollmentIdentifier", ZoomGlobalState.randomUsername);
+            parameters.put("enrollmentIdentifier", "");
             parameters.put("idScan", zoomIDScanBase64);
             parameters.put("sessionId", sessionId);
 
@@ -251,8 +251,8 @@ public class NetworkingHelpers {
     }
 
     // Create and send the request.  Parse the results and send the caller what the next step should be (Succeed, Retry, or Cancel).
-    public static void getAuthenticateResponseFromZoomServer(ZoomSessionResult zoomSessionResult, ZoomFaceMapResultCallback zoomFaceMapResultCallback, FaceTecManagedAPICallback resultCallback ) {
-        JSONObject parameters = getAuthenticateParameters(zoomSessionResult);
+    public static void getAuthenticateResponseFromZoomServer(String id, ZoomSessionResult zoomSessionResult, ZoomFaceMapResultCallback zoomFaceMapResultCallback, FaceTecManagedAPICallback resultCallback ) {
+        JSONObject parameters = getAuthenticateParameters(id, zoomSessionResult);
         callToZoomServerForResult(
                 ZoomGlobalState.ZoomServerBaseURL + "/match-3d-3d",
                 parameters,

@@ -11,8 +11,12 @@ npm install react-native-facetec
 ## Usage
 
 ```js
-import Facetec from "react-native-facetec";
-
+import {
+  init,
+  enroll,
+  authenticateUser,
+  livenessCheck,
+} from 'react-native-facetec';
 
 init(
     () => {
@@ -22,7 +26,9 @@ init(
 );
 
 enroll(
+    'USER_ID',
     (resp) => {
+        //JSON.parse(resp)
         console.log('enroll ' + resp);
     },
     (error) => console.log('enroll ' + error)
@@ -36,6 +42,7 @@ livenessCheck(
 )
 
 authenticateUser(
+    'USER_ID',
     (resp) => {
         console.log('authenticateUser ' + resp);
     },
@@ -52,3 +59,6 @@ See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the 
 ## License
 
 MIT
+
+## TODO
+IOS

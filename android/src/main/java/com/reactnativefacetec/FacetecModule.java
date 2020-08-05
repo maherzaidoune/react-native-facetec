@@ -92,21 +92,17 @@ public class FacetecModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void Enroll(Callback onSuccess, Callback onFail) {
+    public void Enroll(String id, Callback onSuccess, Callback onFail) {
         this.onSuccess = onSuccess;
         this.onFail = onFail;
-        latestProcessor = new EnrollmentProcessor(getCurrentActivity(), sessionTokenErrorCallback, sessionTokenSuccessCallback);
+        latestProcessor = new EnrollmentProcessor(id, getCurrentActivity(), sessionTokenErrorCallback, sessionTokenSuccessCallback);
     }
 
     @ReactMethod
-    public void AuthenticateUser(Callback onSuccess, Callback onFail) {
-        if(!ZoomGlobalState.isRandomUsernameEnrolled){
-            Toast.makeText(reactContext, "Please enroll first before trying authentication." , Toast.LENGTH_SHORT).show();
-            return;
-        }
+    public void AuthenticateUser(String id, Callback onSuccess, Callback onFail) {
         this.onSuccess = onSuccess;
         this.onFail = onFail;
-        latestProcessor  = new AuthenticateProcessor(getCurrentActivity(), sessionTokenErrorCallback, sessionTokenSuccessCallback);
+        latestProcessor  = new AuthenticateProcessor(id, getCurrentActivity(), sessionTokenErrorCallback, sessionTokenSuccessCallback);
     }
 
     @ReactMethod

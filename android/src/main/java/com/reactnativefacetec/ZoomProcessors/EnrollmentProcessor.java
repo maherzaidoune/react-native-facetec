@@ -25,12 +25,10 @@ public class EnrollmentProcessor extends Processor implements ZoomFaceMapProcess
     private boolean _isSuccess = false;
     SessionTokenSuccessCallback sessionTokenSuccessCallback;
 
-    public EnrollmentProcessor(final Context context, final SessionTokenErrorCallback sessionTokenErrorCallback, SessionTokenSuccessCallback sessionTokenSuccessCallback) {
+    public EnrollmentProcessor(String id, final Context context, final SessionTokenErrorCallback sessionTokenErrorCallback, SessionTokenSuccessCallback sessionTokenSuccessCallback) {
         // For demonstration purposes, generate a new uuid for each user and flag as successful in onZoomSessionComplete.  Reset enrollment status each enrollment attempt.
        this.sessionTokenSuccessCallback = sessionTokenSuccessCallback;
-        ZoomGlobalState.randomUsername = "android_sample_app_" + randomUUID();
-        ZoomGlobalState.isRandomUsernameEnrolled = false;
-
+        ZoomGlobalState.randomUsername = id;
         NetworkingHelpers.getSessionToken(new NetworkingHelpers.SessionTokenCallback() {
             @Override
             public void onResponse(String sessionToken) {

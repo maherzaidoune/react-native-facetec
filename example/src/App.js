@@ -45,9 +45,9 @@ export default class App extends React.Component {
             onPress={() =>
               init(
                 (params) => {
-                  console.log('init ' + params);
+                  console.log('init ' , params);
                 },
-                (error) => console.log('init ' + error)
+                (error) => console.log('init error ' , error)
               )
             }
             style={{
@@ -63,10 +63,11 @@ export default class App extends React.Component {
           <TouchableOpacity
             onPress={() =>
               enroll(
+                'maher',
                 (params) => {
-                  console.log('init ' + params);
+                  console.log('enroll ' , params);
                 },
-                (error) => console.log('init ' + error)
+                (error) => console.log('enroll ' , error)
               )
             }
             style={{
@@ -83,9 +84,9 @@ export default class App extends React.Component {
             onPress={() =>
               livenessCheck(
                 (params) => {
-                  console.log('init ' + params);
+                  console.log('livenessCheck ' , params);
                 },
-                (error) => console.log('init ' + error)
+                (error) => console.log('livenessCheck error ' , error)
               )
             }
             style={{
@@ -101,10 +102,11 @@ export default class App extends React.Component {
           <TouchableOpacity
             onPress={() =>
               authenticateUser(
+                'maher',
                 (params) => {
-                  console.log('init ' + params);
+                  console.log('authenticateUser ' , params);
                 },
-                (error) => console.log('init ' + error)
+                (error) => console.log('authenticateUser error' , error)
               )
             }
             style={{

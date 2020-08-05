@@ -22,10 +22,11 @@ public class AuthenticateProcessor extends Processor implements ZoomFaceMapProce
     ZoomSessionResult latestZoomSessionResult;
     private boolean _isSuccess = false;
     SessionTokenSuccessCallback sessionTokenSuccessCallback;
+    String id;
 
-    public AuthenticateProcessor(final Context context, final SessionTokenErrorCallback sessionTokenErrorCallback, SessionTokenSuccessCallback sessionTokenSuccessCallback) {
+    public AuthenticateProcessor(String id, final Context context, final SessionTokenErrorCallback sessionTokenErrorCallback, SessionTokenSuccessCallback sessionTokenSuccessCallback) {
         this.sessionTokenSuccessCallback = sessionTokenSuccessCallback;
-
+        this.id = id;
         NetworkingHelpers.getSessionToken(new NetworkingHelpers.SessionTokenCallback() {
             @Override
             public void onResponse(String sessionToken) {
@@ -61,7 +62,7 @@ public class AuthenticateProcessor extends Processor implements ZoomFaceMapProce
         }
 
         // Create and parse request to ZoOm Server.
-        NetworkingHelpers.getAuthenticateResponseFromZoomServer(zoomSessionResult, this.zoomFaceMapResultCallback, new FaceTecManagedAPICallback() {
+        NetworkingHelpers.getAuthenticateResponseFromZoomServer(id, zoomSessionResult, this.zoomFaceMapResultCallback, new FaceTecManagedAPICallback() {
             @Override
             public void onResponse(JSONObject responseJSON) {
                 UXNextStep nextStep = ServerResultHelpers.getAuthenticateNextStep(responseJSON);
