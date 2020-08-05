@@ -6,8 +6,6 @@ import {
   View,
   Text,
   InteractionManager,
-  NativeEventEmitter,
-  NativeModules,
 } from 'react-native';
 import {
   init,
