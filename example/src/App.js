@@ -12,6 +12,7 @@ import {
   enroll,
   authenticateUser,
   livenessCheck,
+  CheckId,
 } from 'react-native-facetec';
 
 export default class App extends React.Component {
@@ -23,6 +24,7 @@ export default class App extends React.Component {
       // });
       setTimeout(() => {
         init(
+          'SIGNUP',
           () => {
             console.log('init ');
           },
@@ -45,9 +47,9 @@ export default class App extends React.Component {
             onPress={() =>
               init(
                 (params) => {
-                  console.log('init ' , params);
+                  console.log('init ', params);
                 },
-                (error) => console.log('init error ' , error)
+                (error) => console.log('init error ', error)
               )
             }
             style={{
@@ -65,9 +67,9 @@ export default class App extends React.Component {
               enroll(
                 'maher',
                 (params) => {
-                  console.log('enroll ' , params);
+                  console.log('enroll ', params);
                 },
-                (error) => console.log('enroll ' , error)
+                (error) => console.log('enroll ', error)
               )
             }
             style={{
@@ -84,9 +86,9 @@ export default class App extends React.Component {
             onPress={() =>
               livenessCheck(
                 (params) => {
-                  console.log('livenessCheck ' , params);
+                  console.log('livenessCheck ', params);
                 },
-                (error) => console.log('livenessCheck error ' , error)
+                (error) => console.log('livenessCheck error ', error)
               )
             }
             style={{
@@ -104,9 +106,9 @@ export default class App extends React.Component {
               authenticateUser(
                 'maher',
                 (params) => {
-                  console.log('authenticateUser ' , params);
+                  console.log('authenticateUser ', params);
                 },
-                (error) => console.log('authenticateUser error' , error)
+                (error) => console.log('authenticateUser error', error)
               )
             }
             style={{
@@ -119,17 +121,25 @@ export default class App extends React.Component {
           >
             <Text style={{ color: '#fff' }}>Face matching</Text>
           </TouchableOpacity>
-          {/* <TouchableOpacity
-            onPress={() => enroll()}
+          <TouchableOpacity
+            onPress={() =>
+              CheckId(
+                (params) => {
+                  console.log('PhotoIDMatch ', params);
+                },
+                (error) => console.log('PhotoIDMatch error', error)
+              )
+            }
             style={{
               backgroundColor: '#5F6FED',
               padding: 10,
               paddingStart: 20,
               paddingEnd: 20,
               marginTop: 10,
-            }}>
-            <Text style={{color: '#fff'}}>Enroll user</Text>
-          </TouchableOpacity> */}
+            }}
+          >
+            <Text style={{ color: '#fff' }}>PhotoID Match</Text>
+          </TouchableOpacity>
         </SafeAreaView>
       </View>
     );
