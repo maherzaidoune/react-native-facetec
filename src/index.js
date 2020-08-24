@@ -6,12 +6,9 @@ const { Facetec } = NativeModules;
 //   onFail?: (any) => void,
 // };
 
-export function init(action = null, onSuccess, onFail) {
-  if (action) {
-    Facetec.Init(action, onSuccess, onFail);
-  } else {
-    Facetec.Init(onSuccess, onFail);
-  }
+export function init(onSuccess, onFail) {
+  Facetec.Init(onSuccess, onFail);
+
 }
 
 export function authenticateUser(id, onSuccess, onFail) {

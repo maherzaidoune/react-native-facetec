@@ -104,52 +104,6 @@ public class FacetecModule extends ReactContextBaseJavaModule {
   }
 
     @ReactMethod
-    public void Init(String action, Callback onSuccess, Callback onFail) {
-      this.onSuccess = onSuccess;
-      this.onFail = onFail;
-//      Locale locale;
-//
-//      if(action.equals("RECOVER")){
-//        locale = new Locale("en");
-//      }else{
-//        locale = new Locale("fr");
-//      }
-//      Configuration config = new Configuration(reactContext.getResources().getConfiguration());
-//      config.setLocale(locale);
-//
-//      reactContext.getBaseContext().getResources().updateConfiguration(config,
-//      reactContext.getBaseContext().getResources().getDisplayMetrics());
-//
-//      Log.i("Init", "Init local = " + reactContext.getResources().getConfiguration().locale.getLanguage());
-//      Log.i("Init", "Init string = " + reactContext.getResources().getString(R.string.zoom_instructions_header_ready));
-      ZoomSDK.initialize(
-                reactContext,
-                ZoomGlobalState.DeviceLicenseKeyIdentifier,
-                ZoomGlobalState.PublicFaceMapEncryptionKey,
-                new ZoomSDK.InitializeCallback() {
-                    @Override
-                    public void onCompletion(final boolean successful) {
-                        WritableMap params = Arguments.createMap();
-                        try{
-                            params.putString("initState", ZoomSDK.getStatus(getCurrentActivity()).toString());
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
-                        if(successful){
-                          params.putBoolean("successful", true);
-                          onSuccess.invoke(params);
-                        }
-                        else{
-                          onFail.invoke(params);
-                          params.putBoolean("successful", false);
-                        }
-                        //emitDeviceEvent("initialize", params);
-                    }
-                }
-        );
-    }
-
-    @ReactMethod
     public void Enroll(String id, Callback onSuccess, Callback onFail) {
         this.onSuccess = onSuccess;
         this.onFail = onFail;
