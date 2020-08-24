@@ -1,6 +1,6 @@
 {
   "name": "react-native-facetec",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "description": "facetec module bridge",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -31,7 +31,10 @@
   "keywords": [
     "react-native",
     "ios",
-    "android"
+    "android",
+    "facetec",
+    "face-recognition",
+    "face-matching"
   ],
   "repository": "https://github.com/maherzaidoune/react-native-facetec",
   "author": "maherzaidoune <maherzaidoune@gmail.com> (https://github.com/maherzaidoune)",

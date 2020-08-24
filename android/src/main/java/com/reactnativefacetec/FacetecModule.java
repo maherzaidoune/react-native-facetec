@@ -1,5 +1,10 @@
 package com.reactnativefacetec;
 
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.os.Build;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -11,14 +16,19 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facetec.zoom.sdk.ZoomCustomization;
+import com.facetec.zoom.sdk.ZoomGuidanceCustomization;
 import com.facetec.zoom.sdk.ZoomSDK;
 import com.reactnativefacetec.ZoomProcessors.AuthenticateProcessor;
 import com.reactnativefacetec.ZoomProcessors.EnrollmentProcessor;
 import com.reactnativefacetec.ZoomProcessors.LivenessCheckProcessor;
 import com.reactnativefacetec.ZoomProcessors.Processor;
+import com.reactnativefacetec.ZoomProcessors.ThemeHelpers;
 import com.reactnativefacetec.ZoomProcessors.ZoomGlobalState;
+import com.reactnativefacetec.ZoomProcessors.PhotoIDMatchProcessor;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class FacetecModule extends ReactContextBaseJavaModule {
@@ -33,8 +43,9 @@ public class FacetecModule extends ReactContextBaseJavaModule {
         // Pass in the context to the constructor and save it so you can emit events
         // https://facebook.github.io/react-native/docs/native-modules-android.html#the-toast-module
         super(context);
-
         reactContext = context;
+        ThemeHelpers themeHelpers = new ThemeHelpers(context);
+        themeHelpers.setAppTheme("Sample Bank");
     }
 
     @Override
@@ -62,9 +73,56 @@ public class FacetecModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void Init(Callback onSuccess, Callback onFail) {
+    this.onSuccess = onSuccess;
+    this.onFail = onFail;
+
+    ZoomSDK.initialize(
+      reactContext,
+      ZoomGlobalState.DeviceLicenseKeyIdentifier,
+      ZoomGlobalState.PublicFaceMapEncryptionKey,
+      new ZoomSDK.InitializeCallback() {
+        @Override
+        public void onCompletion(final boolean successful) {
+          WritableMap params = Arguments.createMap();
+          try{
+            params.putString("initState", ZoomSDK.getStatus(getCurrentActivity()).toString());
+          }catch (Exception e){
+            e.printStackTrace();
+          }
+          if(successful){
+            params.putBoolean("successful", true);
+            onSuccess.invoke(params);
+          }
+          else{
+            onFail.invoke(params);
+            params.putBoolean("successful", false);
+          }
+          //emitDeviceEvent("initialize", params);
+        }
+      }
+    );
+  }
+
+    @ReactMethod
+    public void Init(String action, Callback onSuccess, Callback onFail) {
       this.onSuccess = onSuccess;
       this.onFail = onFail;
-        ZoomSDK.initialize(
+//      Locale locale;
+//
+//      if(action.equals("RECOVER")){
+//        locale = new Locale("en");
+//      }else{
+//        locale = new Locale("fr");
+//      }
+//      Configuration config = new Configuration(reactContext.getResources().getConfiguration());
+//      config.setLocale(locale);
+//
+//      reactContext.getBaseContext().getResources().updateConfiguration(config,
+//      reactContext.getBaseContext().getResources().getDisplayMetrics());
+//
+//      Log.i("Init", "Init local = " + reactContext.getResources().getConfiguration().locale.getLanguage());
+//      Log.i("Init", "Init string = " + reactContext.getResources().getString(R.string.zoom_instructions_header_ready));
+      ZoomSDK.initialize(
                 reactContext,
                 ZoomGlobalState.DeviceLicenseKeyIdentifier,
                 ZoomGlobalState.PublicFaceMapEncryptionKey,
@@ -111,6 +169,13 @@ public class FacetecModule extends ReactContextBaseJavaModule {
         this.onFail = onFail;
         latestProcessor = new LivenessCheckProcessor( getCurrentActivity(), sessionTokenErrorCallback, sessionTokenSuccessCallback);
     }
+
+  @ReactMethod
+  public void CheckId(Callback onSuccess, Callback onFail) {
+    this.onSuccess = onSuccess;
+    this.onFail = onFail;
+    latestProcessor = new PhotoIDMatchProcessor( getCurrentActivity(), sessionTokenErrorCallback, sessionTokenSuccessCallback);
+  }
 
     Processor.SessionTokenErrorCallback sessionTokenErrorCallback = new Processor.SessionTokenErrorCallback() {
         @Override

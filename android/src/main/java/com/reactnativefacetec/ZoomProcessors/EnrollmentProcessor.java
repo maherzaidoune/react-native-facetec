@@ -7,6 +7,7 @@
 package com.reactnativefacetec.ZoomProcessors;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.facetec.zoom.sdk.ZoomCustomization;
 import com.facetec.zoom.sdk.ZoomFaceMapProcessor;
@@ -15,6 +16,7 @@ import com.facetec.zoom.sdk.ZoomSessionActivity;
 import com.facetec.zoom.sdk.ZoomSessionResult;
 import com.facetec.zoom.sdk.ZoomSessionStatus;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import static java.util.UUID.randomUUID;
@@ -72,9 +74,15 @@ public class EnrollmentProcessor extends Processor implements ZoomFaceMapProcess
                 if (nextStep == UXNextStep.Succeed) {
                     _isSuccess = true;
                     // Dynamically set the success message.
+                  try {
+                    sessionTokenSuccessCallback.onSuccess(responseJSON.getJSONObject("data").toString());
+                  } catch (JSONException e) {
                     sessionTokenSuccessCallback.onSuccess(responseJSON.toString());
+                    e.printStackTrace();
+                  }
+                  Log.i("responseJSON", "responseJSON == "+ responseJSON.toString());
                     ZoomCustomization.overrideResultScreenSuccessMessage = "Enrollment\nSuccessful";
-                    ZoomGlobalState.isRandomUsernameEnrolled = true;
+//                    ZoomGlobalState.isRandomUsernameEnrolled = true;
                     zoomFaceMapResultCallback.succeed();
                 }
                 else if (nextStep == UXNextStep.Retry) {

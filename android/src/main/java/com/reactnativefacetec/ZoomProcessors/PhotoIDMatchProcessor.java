@@ -20,6 +20,7 @@ import com.facetec.zoom.sdk.ZoomSessionActivity;
 import com.facetec.zoom.sdk.ZoomSessionResult;
 import com.facetec.zoom.sdk.ZoomSessionStatus;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import static java.util.UUID.randomUUID;
@@ -31,13 +32,17 @@ public class PhotoIDMatchProcessor extends Processor implements ZoomFaceMapProce
     ZoomIDScanResultCallback zoomIDScanResultCallback;
     ZoomIDScanResult latestZoomIDScanResult;
     private boolean _isSuccess = false;
+    SessionTokenSuccessCallback sessionTokenSuccessCallback;
 
-    public PhotoIDMatchProcessor(final Context context, final SessionTokenErrorCallback sessionTokenErrorCallback) {
+
+  public PhotoIDMatchProcessor(final Context context, final SessionTokenErrorCallback sessionTokenErrorCallback, SessionTokenSuccessCallback sessionTokenSuccessCallback) {
         // For demonstration purposes, generate a new uuid for each Photo ID Match.  Enroll this in the DB and compare against the ID after it is scanned.
         ZoomGlobalState.randomUsername = "android_sample_app_" + randomUUID();
         ZoomGlobalState.isRandomUsernameEnrolled = false;
+    this.sessionTokenSuccessCallback = sessionTokenSuccessCallback;
 
-        NetworkingHelpers.getSessionToken(new NetworkingHelpers.SessionTokenCallback() {
+
+    NetworkingHelpers.getSessionToken(new NetworkingHelpers.SessionTokenCallback() {
             @Override
             public void onResponse(String sessionToken) {
                 // Launch the ZoOm Session.
@@ -130,6 +135,12 @@ public class PhotoIDMatchProcessor extends Processor implements ZoomFaceMapProce
                     // Dynamically set the success message.
                     ZoomCustomization.overrideResultScreenSuccessMessage = "Your 3D Face\nMatched Your ID";
                     zoomIDScanResultCallback.succeed();
+                    try {
+                      sessionTokenSuccessCallback.onSuccess(responseJSON.getJSONObject("data").toString());
+                    } catch (JSONException e) {
+                      sessionTokenSuccessCallback.onSuccess(responseJSON.toString());
+                      e.printStackTrace();
+                    }
                 }
                 else if (nextStep == IDScanUXNextStep.Retry) {
                     zoomIDScanResultCallback.retry(ZoomIDScanRetryMode.FRONT);

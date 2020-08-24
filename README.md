@@ -48,13 +48,20 @@ authenticateUser(
     },
     (error) => console.log('authenticateUser ' + error)
 )
+
+CheckId(
+    (resp) => {
+        console.log('CheckId ' + resp);
+    },
+    (error) => console.log('CheckId ' + error)
+)
 ```
 ## config
 minSdkVersion = 19
-Add your SDK key to ZoomGlobalState.java
-```java
 
-    public static String DeviceLicenseKeyIdentifier = "YOUR_API_KEY";
+```java
+//Add your SDK key to ZoomGlobalState.java
+public static String DeviceLicenseKeyIdentifier = "YOUR_API_KEY";
 ```
 
 ## Contributing
