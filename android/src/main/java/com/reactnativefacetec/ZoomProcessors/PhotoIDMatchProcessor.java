@@ -7,6 +7,7 @@
 package com.reactnativefacetec.ZoomProcessors;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.facetec.zoom.sdk.ZoomCustomization;
 import com.facetec.zoom.sdk.ZoomFaceMapProcessor;
@@ -33,16 +34,19 @@ public class PhotoIDMatchProcessor extends Processor implements ZoomFaceMapProce
     ZoomIDScanResult latestZoomIDScanResult;
     private boolean _isSuccess = false;
     SessionTokenSuccessCallback sessionTokenSuccessCallback;
+    SessionTokenErrorCallback sessionTokenErrorCallback;
+    String id;
 
 
-  public PhotoIDMatchProcessor(final Context context, final SessionTokenErrorCallback sessionTokenErrorCallback, SessionTokenSuccessCallback sessionTokenSuccessCallback) {
+  public PhotoIDMatchProcessor(String id, final Context context, final SessionTokenErrorCallback sessionTokenErrorCallback, SessionTokenSuccessCallback sessionTokenSuccessCallback) {
         // For demonstration purposes, generate a new uuid for each Photo ID Match.  Enroll this in the DB and compare against the ID after it is scanned.
         ZoomGlobalState.randomUsername = "android_sample_app_" + randomUUID();
         ZoomGlobalState.isRandomUsernameEnrolled = false;
-    this.sessionTokenSuccessCallback = sessionTokenSuccessCallback;
+        this.sessionTokenSuccessCallback = sessionTokenSuccessCallback;
+        this.sessionTokenErrorCallback = sessionTokenErrorCallback;
+        this.id = id;
 
-
-    NetworkingHelpers.getSessionToken(new NetworkingHelpers.SessionTokenCallback() {
+        NetworkingHelpers.getSessionToken(new NetworkingHelpers.SessionTokenCallback() {
             @Override
             public void onResponse(String sessionToken) {
                 // Launch the ZoOm Session.
@@ -108,48 +112,57 @@ public class PhotoIDMatchProcessor extends Processor implements ZoomFaceMapProce
 
         // cancellation, timeout, etc.
         if(zoomIDScanResult.getZoomIDScanStatus() != ZoomIDScanStatus.SUCCESS) {
+          Log.i("PhotoIDMatchProcessor", "PhotoIDMatchProcessor == Not suceess");
             zoomIDScanResultCallback.cancel();
             this.zoomIDScanResultCallback = null;
             return;
         }
 
         if(zoomIDScanResult.getIDScanMetrics() == null) {
-            zoomIDScanResultCallback.cancel();
+          Log.i("PhotoIDMatchProcessor", "PhotoIDMatchProcessor metrics == Null");
+          zoomIDScanResultCallback.cancel();
             this.zoomIDScanResultCallback = null;
             return;
         }
 
         if(zoomIDScanResult.getIDScanMetrics().getIDScan() == null) {
-            zoomIDScanResultCallback.cancel();
+          Log.i("PhotoIDMatchProcessor", "PhotoIDMatchProcessor id == Null");
+          zoomIDScanResultCallback.cancel();
             this.zoomIDScanResultCallback = null;
             return;
         }
 
         // Create and parse request to ZoOm Server.
-        NetworkingHelpers.getPhotoIDMatchResponseFromZoomServer(zoomIDScanResult, zoomIDScanResultCallback, new FaceTecManagedAPICallback() {
+        NetworkingHelpers.getPhotoIDMatchResponseFromZoomServer(id, zoomIDScanResult, zoomIDScanResultCallback, new FaceTecManagedAPICallback() {
             @Override
             public void onResponse(JSONObject responseJSON) {
-                IDScanUXNextStep nextStep = ServerResultHelpers.getPhotoIDMatchNextStep(responseJSON);
+              Log.i("PhotoIDMatchProcessor", "PhotoIDMatchProcessor == responseJSON Not " + responseJSON.toString());
+              IDScanUXNextStep nextStep = ServerResultHelpers.getPhotoIDMatchNextStep(responseJSON);
                 if (nextStep == IDScanUXNextStep.Succeed) {
                     _isSuccess = true;
                     // Dynamically set the success message.
                     ZoomCustomization.overrideResultScreenSuccessMessage = "Your 3D Face\nMatched Your ID";
                     zoomIDScanResultCallback.succeed();
-                    try {
+                  Log.i("PhotoIDMatchProcessor", "PhotoIDMatchProcessor == success " + responseJSON.toString());
+                  try {
                       sessionTokenSuccessCallback.onSuccess(responseJSON.getJSONObject("data").toString());
-                    } catch (JSONException e) {
+                      Log.i("PhotoIDMatchProcessor", "PhotoIDMatchProcessor == success data " + responseJSON.getJSONObject("data").toString());
+                  } catch (JSONException e) {
                       sessionTokenSuccessCallback.onSuccess(responseJSON.toString());
                       e.printStackTrace();
                     }
                 }
                 else if (nextStep == IDScanUXNextStep.Retry) {
                     zoomIDScanResultCallback.retry(ZoomIDScanRetryMode.FRONT);
+                    sessionTokenErrorCallback.onError(responseJSON.toString());
                 }
                 else if (nextStep == IDScanUXNextStep.RetryInvalidId) {
-                    zoomIDScanResultCallback.retry(ZoomIDScanRetryMode.FRONT, "Photo ID\nNot Fully Visible");
+                  sessionTokenErrorCallback.onError(responseJSON.toString());
+                  zoomIDScanResultCallback.retry(ZoomIDScanRetryMode.FRONT, "Photo ID\nNot Fully Visible");
                 }
                 else {
-                    zoomIDScanResultCallback.cancel();
+                  sessionTokenErrorCallback.onError(responseJSON.toString());
+                  zoomIDScanResultCallback.cancel();
                 }
             }
         });

@@ -194,12 +194,12 @@ public class NetworkingHelpers {
     }
 
     // Set up parameters needed to communicate to the API for Photo ID Match.
-    public static JSONObject getPhotoIDParameters(ZoomIDScanResult zoomIDScanResult) {
+    public static JSONObject getPhotoIDParameters(String id, ZoomIDScanResult zoomIDScanResult) {
         String zoomIDScanBase64 = zoomIDScanResult.getIDScanMetrics().getIDScanBase64();
         String sessionId = zoomIDScanResult.getIDScanMetrics().getSessionId();
         JSONObject parameters = new JSONObject();
         try {
-            parameters.put("enrollmentIdentifier", "");
+            parameters.put("enrollmentIdentifier", id);
             parameters.put("idScan", zoomIDScanBase64);
             parameters.put("sessionId", sessionId);
 
@@ -263,8 +263,8 @@ public class NetworkingHelpers {
     }
 
     // Create and send the request.  Parse the results and send the caller what the next step should be (Succeed, Retry, or Cancel).
-    public static void getPhotoIDMatchResponseFromZoomServer(ZoomIDScanResult zoomIDScanResult, ZoomIDScanResultCallback zoomIDScanResultCallback, FaceTecManagedAPICallback resultCallback ){
-        JSONObject parameters = getPhotoIDParameters(zoomIDScanResult);
+    public static void getPhotoIDMatchResponseFromZoomServer(String id, ZoomIDScanResult zoomIDScanResult, ZoomIDScanResultCallback zoomIDScanResultCallback, FaceTecManagedAPICallback resultCallback ){
+        JSONObject parameters = getPhotoIDParameters(id, zoomIDScanResult);
         callFaceTecManagedAPIForIDCheck(
                 ZoomGlobalState.ZoomServerBaseURL + "/id-check",
                 parameters,

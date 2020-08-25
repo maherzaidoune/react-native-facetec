@@ -4,7 +4,7 @@ import com.facetec.zoom.sdk.ZoomCustomization;
 
 public class ZoomGlobalState {
     // Replace string below with your license key from https://dev.zoomlogin.com/zoomsdk/#/account
-    public static String DeviceLicenseKeyIdentifier = "YOUR_API_KEY";
+    public static String DeviceLicenseKeyIdentifier = "";
 
     // "https://api.zoomauth.com/api/v2/biometrics" for FaceTec Managed Testing API.
     // "http://localhost:8080" if running ZoOm Server SDK (Dockerized) locally.

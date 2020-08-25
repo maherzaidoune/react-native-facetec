@@ -23,8 +23,8 @@ export function livenessCheck(onSuccess, onFail) {
   Facetec.LivenessCheck(onSuccess, onFail);
 }
 
-export function CheckId(onSuccess, onFail) {
-  Facetec.CheckId(onSuccess, onFail);
+export function CheckId(id, onSuccess, onFail) {
+  Facetec.CheckId(id, onSuccess, onFail);
 }
 
 export default { init, enroll, authenticateUser, livenessCheck, CheckId };

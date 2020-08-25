@@ -50,6 +50,7 @@ authenticateUser(
 )
 
 CheckId(
+    'USER_ID',
     (resp) => {
         console.log('CheckId ' + resp);
     },
