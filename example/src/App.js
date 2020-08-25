@@ -24,7 +24,6 @@ export default class App extends React.Component {
       // });
       setTimeout(() => {
         init(
-          'SIGNUP',
           () => {
             console.log('init ');
           },
@@ -124,6 +123,7 @@ export default class App extends React.Component {
           <TouchableOpacity
             onPress={() =>
               CheckId(
+                'maher',
                 (params) => {
                   console.log('PhotoIDMatch ', params);
                 },
