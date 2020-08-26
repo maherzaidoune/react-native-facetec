@@ -153,11 +153,11 @@ public class PhotoIDMatchProcessor extends Processor implements ZoomFaceMapProce
                     }
                 }
                 else if (nextStep == IDScanUXNextStep.Retry) {
-                    zoomIDScanResultCallback.retry(ZoomIDScanRetryMode.FRONT);
-                    sessionTokenErrorCallback.onError(responseJSON.toString());
+//                  sessionTokenErrorCallback.onError(responseJSON.toString());
+                  zoomIDScanResultCallback.retry(ZoomIDScanRetryMode.FRONT);
                 }
                 else if (nextStep == IDScanUXNextStep.RetryInvalidId) {
-                  sessionTokenErrorCallback.onError(responseJSON.toString());
+//                  sessionTokenErrorCallback.onError(responseJSON.toString());
                   zoomIDScanResultCallback.retry(ZoomIDScanRetryMode.FRONT, "Photo ID\nNot Fully Visible");
                 }
                 else {
