@@ -124,12 +124,12 @@ public class FacetecModule extends ReactContextBaseJavaModule {
         latestProcessor = new LivenessCheckProcessor( getCurrentActivity(), sessionTokenErrorCallback, sessionTokenSuccessCallback);
     }
 
-  @ReactMethod
-  public void CheckId(String id, Callback onSuccess, Callback onFail) {
-    this.onSuccess = onSuccess;
-    this.onFail = onFail;
-    latestProcessor = new PhotoIDMatchProcessor(id,  getCurrentActivity(), sessionTokenErrorCallback, sessionTokenSuccessCallback);
-  }
+    @ReactMethod
+    public void CheckId(String id, Callback onSuccess, Callback onFail) {
+      this.onSuccess = onSuccess;
+      this.onFail = onFail;
+      latestProcessor = new PhotoIDMatchProcessor(id,  getCurrentActivity(), sessionTokenErrorCallback, sessionTokenSuccessCallback);
+    }
 
     Processor.SessionTokenErrorCallback sessionTokenErrorCallback = new Processor.SessionTokenErrorCallback() {
         @Override
