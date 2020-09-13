@@ -53,6 +53,9 @@ CheckId(
     'USER_ID',
     (resp) => {
         console.log('CheckId ' + resp);
+        let data = JSON.parse(params);
+        data.FrontImagesCompressedBase64 // front id image data:image/jpeg;base64
+        data.BackImagesCompressedBase64 // back id image data:image/jpeg;base64
     },
     (error) => console.log('CheckId ' + error)
 )

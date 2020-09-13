@@ -6,6 +6,7 @@ import {
   View,
   Text,
   InteractionManager,
+  Image
 } from 'react-native';
 import {
   init,
@@ -16,6 +17,14 @@ import {
 } from 'react-native-facetec';
 
 export default class App extends React.Component {
+
+
+  constructor(props){
+    super(props)
+    this.state={
+      img: ''
+    }
+  }
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       // const eventEmitter = new NativeEventEmitter(NativeModules.Facetec);
@@ -126,6 +135,10 @@ export default class App extends React.Component {
                 'maher',
                 (params) => {
                   console.log('PhotoIDMatch ', params);
+                  let data = JSON.parse(params);
+                  this.setState({
+                    img: data.FrontImagesCompressedBase64
+                  })
                 },
                 (error) => console.log('PhotoIDMatch error', error)
               )
@@ -140,6 +153,11 @@ export default class App extends React.Component {
           >
             <Text style={{ color: '#fff' }}>PhotoID Match</Text>
           </TouchableOpacity>
+
+          <Image source={{uri: 'data:image/jpeg;base64,' + this.state.img}} style={{
+            width: 100,
+            height: 100
+          }} />
         </SafeAreaView>
       </View>
     );
