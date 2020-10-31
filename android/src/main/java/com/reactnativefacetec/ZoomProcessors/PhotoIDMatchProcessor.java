@@ -149,22 +149,26 @@ public class PhotoIDMatchProcessor extends Processor implements ZoomFaceMapProce
                   JSONObject obj = new JSONObject();
                   try {
 
-                    Log.i("PhotoIDMatchProcessor", "zoomIDScanResult == success " + zoomIDScanResult.getIDScanMetrics().getFrontImagesCompressedBase64().get(0));
-                    Log.i("PhotoIDMatchProcessor", "zoomIDScanResult == success " + zoomIDScanResult.getIDScanMetrics().getBackImagesCompressedBase64().get(0));
-
                     obj.put("responseJSON", responseJSON.getJSONObject("data").toString());
                     obj.put("FrontImagesCompressedBase64", zoomIDScanResult.getIDScanMetrics().getFrontImagesCompressedBase64().get(0));
-                    obj.put("BackImagesCompressedBase64", zoomIDScanResult.getIDScanMetrics().getBackImagesCompressedBase64().get(0));
+                    if(zoomIDScanResult.getIDScanMetrics().getBackImagesCompressedBase64() != null && zoomIDScanResult.getIDScanMetrics().getBackImagesCompressedBase64().size() > 0){
+                        obj.put("BackImagesCompressedBase64", zoomIDScanResult.getIDScanMetrics().getBackImagesCompressedBase64().get(0));
+                    }
 
 
                     sessionTokenSuccessCallback.onSuccess(obj.toString());
-                      Log.i("PhotoIDMatchProcessor", "PhotoIDMatchProcessor == success data " + responseJSON.getJSONObject("data").toString());
                   } catch (JSONException e) {
                       sessionTokenSuccessCallback.onSuccess(responseJSON.toString());
                       try{
                         obj.put("responseJSON", responseJSON.toString());
-                        obj.put("FrontImagesCompressedBase64", zoomIDScanResult.getIDScanMetrics().getFrontImagesCompressedBase64().get(0));
-                        obj.put("BackImagesCompressedBase64", zoomIDScanResult.getIDScanMetrics().getBackImagesCompressedBase64().get(0));                      }catch (Exception e1){
+                        if(zoomIDScanResult.getIDScanMetrics().getFrontImagesCompressedBase64() != null && zoomIDScanResult.getIDScanMetrics().getFrontImagesCompressedBase64().size() > 0){
+                            obj.put("FrontImagesCompressedBase64", zoomIDScanResult.getIDScanMetrics().getFrontImagesCompressedBase64().get(0));
+                        }
+                          if(zoomIDScanResult.getIDScanMetrics().getBackImagesCompressedBase64() != null && zoomIDScanResult.getIDScanMetrics().getBackImagesCompressedBase64().size() > 0){
+                              obj.put("BackImagesCompressedBase64", zoomIDScanResult.getIDScanMetrics().getBackImagesCompressedBase64().get(0));
+                          }
+
+                      }catch (Exception e1){
                         e1.printStackTrace();
                       }
                       e.printStackTrace();
