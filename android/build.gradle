@@ -3,12 +3,19 @@ buildscript {
   def kotlin_version = rootProject.ext.has('kotlinVersion') ? rootProject.ext.get('kotlinVersion') : project.properties['Facetec_kotlinVersion']
 
   repositories {
+    mavenLocal()
+    // This was missing an needs to be added to your list
+    maven {
+      // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+      url("$rootDir/../node_modules/react-native/android")
+    }
     google()
     jcenter()
+    maven { url 'https://www.jitpack.io' }
   }
 
   dependencies {
-    classpath 'com.android.tools.build:gradle:3.2.1'
+    classpath 'com.android.tools.build:gradle:4.1.1'
     // noinspection DifferentKotlinGradleVersion
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
   }
@@ -67,6 +74,7 @@ repositories {
     )
   }
 
+
   if (defaultDir.exists()) {
     maven {
       url defaultDir.toString()
@@ -110,13 +118,6 @@ repositories {
         found = true
       }
     })
-  }
-
-  if (!found) {
-    throw new GradleException(
-            "${project.name}: unable to locate React Native android sources. " +
-                    "Ensure you have you installed React Native as a dependency in your project and try again."
-    )
   }
 }
 

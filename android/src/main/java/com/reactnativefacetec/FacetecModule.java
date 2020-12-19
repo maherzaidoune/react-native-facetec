@@ -16,80 +16,86 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.facetec.zoom.sdk.ZoomCustomization;
-import com.facetec.zoom.sdk.ZoomGuidanceCustomization;
-import com.facetec.zoom.sdk.ZoomSDK;
+import com.facetec.sdk.FaceTecSDK;
 import com.reactnativefacetec.ZoomProcessors.AuthenticateProcessor;
 import com.reactnativefacetec.ZoomProcessors.EnrollmentProcessor;
 import com.reactnativefacetec.ZoomProcessors.LivenessCheckProcessor;
+import com.reactnativefacetec.ZoomProcessors.NetworkingHelpers;
+import com.reactnativefacetec.ZoomProcessors.PhotoIDMatchProcessor;
 import com.reactnativefacetec.ZoomProcessors.Processor;
 import com.reactnativefacetec.ZoomProcessors.ThemeHelpers;
 import com.reactnativefacetec.ZoomProcessors.ZoomGlobalState;
-import com.reactnativefacetec.ZoomProcessors.PhotoIDMatchProcessor;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import okhttp3.Call;
+
 public class FacetecModule extends ReactContextBaseJavaModule {
-    public static final String REACT_CLASS = "Facetec";
-    private static ReactApplicationContext reactContext = null;
-    public Processor latestProcessor;
+  public static final String REACT_CLASS = "Facetec";
+  private static ReactApplicationContext reactContext = null;
+  public Processor latestProcessor;
+  String sesstionToken;
 
   Callback onSuccess;
   Callback onFail;
 
-    public FacetecModule(ReactApplicationContext context) {
-        // Pass in the context to the constructor and save it so you can emit events
-        // https://facebook.github.io/react-native/docs/native-modules-android.html#the-toast-module
-        super(context);
-        reactContext = context;
-        ThemeHelpers themeHelpers = new ThemeHelpers(context);
-        themeHelpers.setAppTheme("Sample Bank");
-    }
+  public FacetecModule(ReactApplicationContext context) {
+    // Pass in the context to the constructor and save it so you can emit events
+    // https://facebook.github.io/react-native/docs/native-modules-android.html#the-toast-module
+    super(context);
+    reactContext = context;
+    ThemeHelpers themeHelpers = new ThemeHelpers(context);
+    themeHelpers.setAppTheme("Sample Bank");
+  }
 
-    @Override
-    public String getName() {
-        // Tell React the name of the module
-        // https://facebook.github.io/react-native/docs/native-modules-android.html#the-toast-module
-        return REACT_CLASS;
-    }
+  @Override
+  public String getName() {
+    // Tell React the name of the module
+    // https://facebook.github.io/react-native/docs/native-modules-android.html#the-toast-module
+    return REACT_CLASS;
+  }
 
-    @Override
-    public Map<String, Object> getConstants() {
-        // Export any constants to be used in your native module
-        // https://facebook.github.io/react-native/docs/native-modules-android.html#the-toast-module
-        final Map<String, Object> constants = new HashMap<>();
-        constants.put("EXAMPLE_CONSTANT", "example");
+  @Override
+  public Map<String, Object> getConstants() {
+    // Export any constants to be used in your native module
+    // https://facebook.github.io/react-native/docs/native-modules-android.html#the-toast-module
+    final Map<String, Object> constants = new HashMap<>();
+    constants.put("EXAMPLE_CONSTANT", "example");
 
-        return constants;
-    }
+    return constants;
+  }
 
-    private static void emitDeviceEvent(String eventName, @Nullable WritableMap eventData) {
-        // A method for emitting from the native side to JS
-        // https://facebook.github.io/react-native/docs/native-modules-android.html#sending-events-to-javascript
-        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, eventData);
-    }
+  private static void emitDeviceEvent(String eventName, @Nullable WritableMap eventData) {
+    // A method for emitting from the native side to JS
+    // https://facebook.github.io/react-native/docs/native-modules-android.html#sending-events-to-javascript
+    reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, eventData);
+  }
 
-    @ReactMethod
-    public void Init(Callback onSuccess, Callback onFail) {
+  @ReactMethod
+  public void Init(Callback onSuccess, Callback onFail) {
     this.onSuccess = onSuccess;
     this.onFail = onFail;
 
-    ZoomSDK.initialize(
+    FaceTecSDK.initializeInProductionMode(
       reactContext,
+      ZoomGlobalState.ProductionKeyText,
       ZoomGlobalState.DeviceLicenseKeyIdentifier,
-      ZoomGlobalState.PublicFaceMapEncryptionKey,
-      new ZoomSDK.InitializeCallback() {
+      ZoomGlobalState.PublicFaceMapEncryptionKey, new FaceTecSDK.InitializeCallback() {
         @Override
-        public void onCompletion(final boolean successful) {
+        public void onCompletion(boolean b) {
           WritableMap params = Arguments.createMap();
           try{
-            params.putString("initState", ZoomSDK.getStatus(getCurrentActivity()).toString());
+            params.putString("initState", b+"");
           }catch (Exception e){
             e.printStackTrace();
           }
-          if(successful){
+          if(b){
             params.putBoolean("successful", true);
             onSuccess.invoke(params);
           }
@@ -97,55 +103,92 @@ public class FacetecModule extends ReactContextBaseJavaModule {
             onFail.invoke(params);
             params.putBoolean("successful", false);
           }
-          //emitDeviceEvent("initialize", params);
         }
       }
     );
   }
 
-    @ReactMethod
-    public void Enroll(String id, Callback onSuccess, Callback onFail) {
-        this.onSuccess = onSuccess;
-        this.onFail = onFail;
-        latestProcessor = new EnrollmentProcessor(id, getCurrentActivity(), sessionTokenErrorCallback, sessionTokenSuccessCallback);
-    }
+  @ReactMethod
+  public void Enroll(String id, Callback onSuccess, Callback onFail) {
+    okhttp3.Request request = new okhttp3.Request.Builder()
+      .header("X-Device-Key", ZoomGlobalState.DeviceLicenseKeyIdentifier)
+      .header("User-Agent", FaceTecSDK.createFaceTecAPIUserAgentString(id))
+      .url(ZoomGlobalState.ZoomServerBaseURL + "/session-token")
+      .get()
+      .build();
 
-    @ReactMethod
-    public void AuthenticateUser(String id, Callback onSuccess, Callback onFail) {
-        this.onSuccess = onSuccess;
-        this.onFail = onFail;
-        latestProcessor  = new AuthenticateProcessor(id, getCurrentActivity(), sessionTokenErrorCallback, sessionTokenSuccessCallback);
-    }
+    NetworkingHelpers.getApiClient().newCall(request).enqueue(new okhttp3.Callback() {
+      @Override
+      public void onFailure(Call call, IOException e) {
+        e.printStackTrace();
+        Log.d("FaceTecSDKSampleApp", "Exception raised while attempting HTTPS call.");
+        // If this comes from HTTPS cancel call, don't set the sub code to NETWORK_ERROR.
+        if(!e.getMessage().equals(NetworkingHelpers.OK_HTTP_RESPONSE_CANCELED)) {
+          onFail.invoke("Exception raised while attempting HTTPS call");
+        }
+      }
 
-    @ReactMethod
-    public void LivenessCheck(Callback onSuccess, Callback onFail) {
-        this.onSuccess = onSuccess;
-        this.onFail = onFail;
-        latestProcessor = new LivenessCheckProcessor( getCurrentActivity(), sessionTokenErrorCallback, sessionTokenSuccessCallback);
-    }
-
-    @ReactMethod
-    public void CheckId(String id, Callback onSuccess, Callback onFail) {
-      this.onSuccess = onSuccess;
-      this.onFail = onFail;
-      latestProcessor = new PhotoIDMatchProcessor(id,  getCurrentActivity(), sessionTokenErrorCallback, sessionTokenSuccessCallback);
-    }
-
-    Processor.SessionTokenErrorCallback sessionTokenErrorCallback = new Processor.SessionTokenErrorCallback() {
-        @Override
-        public void onError(String msg) {
-          try{
-            onFail.invoke(msg);
-          }catch (Exception e){
-            e.printStackTrace();
+      @Override
+      public void onResponse(Call call, okhttp3.Response response) throws IOException {
+        String responseString = response.body().string();
+        response.body().close();
+        try {
+          JSONObject responseJSON = new JSONObject(responseString);
+          if(responseJSON.has("sessionToken")) {
+            sesstionToken = responseJSON.getString("sessionToken");
+            latestProcessor = new EnrollmentProcessor(id, responseJSON.getString("sessionToken"), getCurrentActivity(), sessionTokenErrorCallback, sessionTokenSuccessCallback);
+          }
+          else {
+            onFail.invoke("sessionToken invalid");
           }
         }
-    };
-
-    Processor.SessionTokenSuccessCallback sessionTokenSuccessCallback = new Processor.SessionTokenSuccessCallback() {
-        @Override
-        public void onSuccess(String msg) {
-            onSuccess.invoke(msg);
+        catch(JSONException e) {
+          e.printStackTrace();
+          Log.d("FaceTecSDKSampleApp", "Exception raised while attempting to parse JSON result.");
+          onFail.invoke("Exception raised while attempting to parse JSON result.");
         }
-    };
+      }
+    });
+    this.onSuccess = onSuccess;
+    this.onFail = onFail;
+  }
+
+  @ReactMethod
+  public void AuthenticateUser(String id, Callback onSuccess, Callback onFail) {
+    this.onSuccess = onSuccess;
+    this.onFail = onFail;
+    latestProcessor  = new AuthenticateProcessor(sesstionToken, getCurrentActivity(), sessionTokenErrorCallback, sessionTokenSuccessCallback);
+  }
+
+  @ReactMethod
+  public void LivenessCheck(Callback onSuccess, Callback onFail) {
+    this.onSuccess = onSuccess;
+    this.onFail = onFail;
+    latestProcessor = new LivenessCheckProcessor(sesstionToken,getCurrentActivity());
+  }
+
+  @ReactMethod
+  public void CheckId(String id, Callback onSuccess, Callback onFail) {
+    this.onSuccess = onSuccess;
+    this.onFail = onFail;
+    latestProcessor = new PhotoIDMatchProcessor(id, sesstionToken,  getCurrentActivity(), sessionTokenErrorCallback, sessionTokenSuccessCallback);
+  }
+
+  Processor.SessionTokenErrorCallback sessionTokenErrorCallback = new Processor.SessionTokenErrorCallback() {
+    @Override
+    public void onError(String msg) {
+      try{
+        onFail.invoke(msg);
+      }catch (Exception e){
+        e.printStackTrace();
+      }
+    }
+  };
+
+  Processor.SessionTokenSuccessCallback sessionTokenSuccessCallback = new Processor.SessionTokenSuccessCallback() {
+    @Override
+    public void onSuccess(String msg) {
+      onSuccess.invoke(msg);
+    }
+  };
 }
