@@ -42,16 +42,15 @@ public class PhotoIDMatchProcessor extends Processor implements FaceTecFaceScanP
   SessionTokenSuccessCallback sessionTokenSuccessCallback;
   SessionTokenErrorCallback sessionTokenErrorCallback;
   String id;
-
+  ArrayList<String> frontImagesCompressedBase64;
+  ArrayList<String> backImagesCompressedBase64;
 
   public PhotoIDMatchProcessor(String userId, String id, final Context context, final SessionTokenErrorCallback sessionTokenErrorCallback, SessionTokenSuccessCallback sessionTokenSuccessCallback) {
     // For demonstration purposes, generate a new uuid for each Photo ID Match.  Enroll this in the DB and compare against the ID after it is scanned.
     this.sessionTokenSuccessCallback = sessionTokenSuccessCallback;
     this.sessionTokenErrorCallback = sessionTokenErrorCallback;
     this.id = userId;
-
     FaceTecSessionActivity.createAndLaunchSession(context, PhotoIDMatchProcessor.this, PhotoIDMatchProcessor.this, id);
-
   }
 
   public boolean isSuccess() {
@@ -226,8 +225,8 @@ public class PhotoIDMatchProcessor extends Processor implements FaceTecFaceScanP
       parameters.put("idScan", idScanResult.getIDScanBase64());
       parameters.put("minMatchLevel", minMatchLevel);
 
-      ArrayList<String> frontImagesCompressedBase64 = idScanResult.getFrontImagesCompressedBase64();
-      ArrayList<String> backImagesCompressedBase64 = idScanResult.getBackImagesCompressedBase64();
+      frontImagesCompressedBase64 = idScanResult.getFrontImagesCompressedBase64();
+      backImagesCompressedBase64 = idScanResult.getBackImagesCompressedBase64();
       if(frontImagesCompressedBase64.size() > 0) {
         parameters.put("idScanFrontImage", frontImagesCompressedBase64.get(0));
       }
@@ -298,6 +297,19 @@ public class PhotoIDMatchProcessor extends Processor implements FaceTecFaceScanP
 
             FaceTecCustomization.overrideResultScreenSuccessMessage = "Your 3D Face\nMatched Your ID";
             idScanResultCallback.succeed();
+            JSONObject obj = new JSONObject();
+            try{
+              obj.put("responseJSON", responseJSON.getJSONObject("data").toString());
+              obj.put("FrontImagesCompressedBase64", frontImagesCompressedBase64.toString());
+              obj.put("BackImagesCompressedBase64", backImagesCompressedBase64.toString());
+              sessionTokenSuccessCallback.onSuccess(obj.toString());
+            }catch (Exception e){
+              e.printStackTrace();
+              obj.put("responseJSON", responseJSON.getJSONObject("data").toString());
+              sessionTokenSuccessCallback.onSuccess(obj.toString());
+
+            }
+
           }
           else if (didSucceed == false) {
             // CASE:  In our Sample code, "success" being present and false means that the User Needs to Retry.

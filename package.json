@@ -1,6 +1,6 @@
 {
   "name": "react-native-facetec",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": false,
   "description": "facetec module bridge",
   "main": "lib/commonjs/index",

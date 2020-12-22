@@ -177,11 +177,11 @@ public class FacetecModule extends ReactContextBaseJavaModule {
   Processor.SessionTokenErrorCallback sessionTokenErrorCallback = new Processor.SessionTokenErrorCallback() {
     @Override
     public void onError(String msg) {
-      try{
-        onFail.invoke(msg);
-      }catch (Exception e){
-        e.printStackTrace();
-      }
+      // try{
+      //   onFail.invoke(msg);
+      // }catch (Exception e){
+      //   e.printStackTrace();
+      // }
     }
   };
 
