@@ -157,7 +157,46 @@ public class FacetecModule extends ReactContextBaseJavaModule {
   public void AuthenticateUser(String id, Callback onSuccess, Callback onFail) {
     this.onSuccess = onSuccess;
     this.onFail = onFail;
-    latestProcessor  = new AuthenticateProcessor(sesstionToken, getCurrentActivity(), sessionTokenErrorCallback, sessionTokenSuccessCallback);
+
+    okhttp3.Request request = new okhttp3.Request.Builder()
+            .header("X-Device-Key", ZoomGlobalState.DeviceLicenseKeyIdentifier)
+            .header("User-Agent", FaceTecSDK.createFaceTecAPIUserAgentString(id))
+            .url(ZoomGlobalState.ZoomServerBaseURL + "/session-token")
+            .get()
+            .build();
+
+    NetworkingHelpers.getApiClient().newCall(request).enqueue(new okhttp3.Callback() {
+      @Override
+      public void onFailure(Call call, IOException e) {
+        e.printStackTrace();
+        Log.d("FaceTecSDKSampleApp", "Exception raised while attempting HTTPS call.");
+        // If this comes from HTTPS cancel call, don't set the sub code to NETWORK_ERROR.
+        if(!e.getMessage().equals(NetworkingHelpers.OK_HTTP_RESPONSE_CANCELED)) {
+          onFail.invoke("Exception raised while attempting HTTPS call");
+        }
+      }
+
+      @Override
+      public void onResponse(Call call, okhttp3.Response response) throws IOException {
+        String responseString = response.body().string();
+        response.body().close();
+        try {
+          JSONObject responseJSON = new JSONObject(responseString);
+          if(responseJSON.has("sessionToken")) {
+            sesstionToken = responseJSON.getString("sessionToken");
+            latestProcessor  = new AuthenticateProcessor(sesstionToken, getCurrentActivity(), sessionTokenErrorCallback, sessionTokenSuccessCallback);
+          }
+          else {
+            onFail.invoke("sessionToken invalid");
+          }
+        }
+        catch(JSONException e) {
+          e.printStackTrace();
+          Log.d("FaceTecSDKSampleApp", "Exception raised while attempting to parse JSON result.");
+          onFail.invoke("Exception raised while attempting to parse JSON result.");
+        }
+      }
+    });
   }
 
   @ReactMethod
@@ -171,17 +210,55 @@ public class FacetecModule extends ReactContextBaseJavaModule {
   public void CheckId(String id, Callback onSuccess, Callback onFail) {
     this.onSuccess = onSuccess;
     this.onFail = onFail;
-    latestProcessor = new PhotoIDMatchProcessor(id, sesstionToken,  getCurrentActivity(), sessionTokenErrorCallback, sessionTokenSuccessCallback);
+    okhttp3.Request request = new okhttp3.Request.Builder()
+            .header("X-Device-Key", ZoomGlobalState.DeviceLicenseKeyIdentifier)
+            .header("User-Agent", FaceTecSDK.createFaceTecAPIUserAgentString(id))
+            .url(ZoomGlobalState.ZoomServerBaseURL + "/session-token")
+            .get()
+            .build();
+
+    NetworkingHelpers.getApiClient().newCall(request).enqueue(new okhttp3.Callback() {
+      @Override
+      public void onFailure(Call call, IOException e) {
+        e.printStackTrace();
+        Log.d("FaceTecSDKSampleApp", "Exception raised while attempting HTTPS call.");
+        // If this comes from HTTPS cancel call, don't set the sub code to NETWORK_ERROR.
+        if(!e.getMessage().equals(NetworkingHelpers.OK_HTTP_RESPONSE_CANCELED)) {
+          onFail.invoke("Exception raised while attempting HTTPS call");
+        }
+      }
+
+      @Override
+      public void onResponse(Call call, okhttp3.Response response) throws IOException {
+        String responseString = response.body().string();
+        response.body().close();
+        try {
+          JSONObject responseJSON = new JSONObject(responseString);
+          if(responseJSON.has("sessionToken")) {
+            sesstionToken = responseJSON.getString("sessionToken");
+            latestProcessor = new PhotoIDMatchProcessor(id, sesstionToken,  getCurrentActivity(), sessionTokenErrorCallback, sessionTokenSuccessCallback);
+          }
+          else {
+            onFail.invoke("sessionToken invalid");
+          }
+        }
+        catch(JSONException e) {
+          e.printStackTrace();
+          Log.d("FaceTecSDKSampleApp", "Exception raised while attempting to parse JSON result.");
+          onFail.invoke("Exception raised while attempting to parse JSON result.");
+        }
+      }
+    });
   }
 
   Processor.SessionTokenErrorCallback sessionTokenErrorCallback = new Processor.SessionTokenErrorCallback() {
     @Override
     public void onError(String msg) {
-      // try{
-      //   onFail.invoke(msg);
-      // }catch (Exception e){
-      //   e.printStackTrace();
-      // }
+//      try{
+//        onFail.invoke(msg);
+//      }catch (Exception e){
+//        e.printStackTrace();
+//      }
     }
   };
 
