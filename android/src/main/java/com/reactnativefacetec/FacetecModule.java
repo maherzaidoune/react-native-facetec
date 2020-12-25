@@ -112,7 +112,6 @@ public class FacetecModule extends ReactContextBaseJavaModule {
   public void Enroll(String id, Callback onSuccess, Callback onFail) {
     okhttp3.Request request = new okhttp3.Request.Builder()
       .header("X-Device-Key", ZoomGlobalState.DeviceLicenseKeyIdentifier)
-      .header("User-Agent", FaceTecSDK.createFaceTecAPIUserAgentString(id))
       .url(ZoomGlobalState.ZoomServerBaseURL + "/session-token")
       .get()
       .build();
@@ -160,7 +159,6 @@ public class FacetecModule extends ReactContextBaseJavaModule {
 
     okhttp3.Request request = new okhttp3.Request.Builder()
             .header("X-Device-Key", ZoomGlobalState.DeviceLicenseKeyIdentifier)
-            .header("User-Agent", FaceTecSDK.createFaceTecAPIUserAgentString(id))
             .url(ZoomGlobalState.ZoomServerBaseURL + "/session-token")
             .get()
             .build();
@@ -184,7 +182,7 @@ public class FacetecModule extends ReactContextBaseJavaModule {
           JSONObject responseJSON = new JSONObject(responseString);
           if(responseJSON.has("sessionToken")) {
             sesstionToken = responseJSON.getString("sessionToken");
-            latestProcessor  = new AuthenticateProcessor(sesstionToken, getCurrentActivity(), sessionTokenErrorCallback, sessionTokenSuccessCallback);
+            latestProcessor  = new AuthenticateProcessor( sesstionToken, id, getCurrentActivity(), sessionTokenErrorCallback, sessionTokenSuccessCallback);
           }
           else {
             onFail.invoke("sessionToken invalid");
@@ -212,7 +210,6 @@ public class FacetecModule extends ReactContextBaseJavaModule {
     this.onFail = onFail;
     okhttp3.Request request = new okhttp3.Request.Builder()
             .header("X-Device-Key", ZoomGlobalState.DeviceLicenseKeyIdentifier)
-            .header("User-Agent", FaceTecSDK.createFaceTecAPIUserAgentString(id))
             .url(ZoomGlobalState.ZoomServerBaseURL + "/session-token")
             .get()
             .build();
