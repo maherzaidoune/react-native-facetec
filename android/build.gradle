@@ -130,4 +130,5 @@ dependencies {
   implementation files('zoom-authentication-8.12.1.aar')
   implementation 'com.squareup.okhttp3:okhttp:3.10.0'
   implementation 'com.squareup.okio:okio:1.15.0'
+  implementation 'com.amitshekhar.android:android-networking:1.0.2'
 }

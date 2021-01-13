@@ -9,6 +9,11 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONArrayRequestListener;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -26,6 +31,7 @@ import com.reactnativefacetec.ZoomProcessors.Processor;
 import com.reactnativefacetec.ZoomProcessors.ThemeHelpers;
 import com.reactnativefacetec.ZoomProcessors.ZoomGlobalState;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -78,34 +84,67 @@ public class FacetecModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void Init(Callback onSuccess, Callback onFail) {
+  public void Init(Callback onSuccess, Callback onFail, String token) {
     this.onSuccess = onSuccess;
     this.onFail = onFail;
 
-    FaceTecSDK.initializeInProductionMode(
-      reactContext,
-      ZoomGlobalState.ProductionKeyText,
-      ZoomGlobalState.DeviceLicenseKeyIdentifier,
-      ZoomGlobalState.PublicFaceMapEncryptionKey, new FaceTecSDK.InitializeCallback() {
-        @Override
-        public void onCompletion(boolean b) {
-          WritableMap params = Arguments.createMap();
-          try{
-            params.putString("initState", b+"");
-          }catch (Exception e){
-            e.printStackTrace();
-          }
-          if(b){
-            params.putBoolean("successful", true);
-            onSuccess.invoke(params);
-          }
-          else{
-            onFail.invoke(params);
-            params.putBoolean("successful", false);
-          }
-        }
-      }
-    );
+    AndroidNetworking.get("https://api-pay.numio.one/numio/keys/facetec")
+            .addQueryParameter("key", "d3c6a969788c94a09e9282418e424b134f33e56e134380aae89ac3ac427dc322")
+            .addHeaders("Authorization", token)
+            .setPriority(Priority.LOW)
+            .build()
+            .getAsJSONObject(new JSONObjectRequestListener() {
+              @Override
+              public void onResponse(JSONObject response) {
+                try {
+                  if(response.has("data")) {
+                    JSONObject data = response.getJSONObject("data");
+                    if(data.has("key")){
+                      String key = "appId      = " + data.getString("appId") + "\n"
+                              + "expiryDate = " + data.getString("expiryDate") + "\n"
+                              + "key        = " + data.getString("key") + "\n";
+                      FaceTecSDK.initializeInProductionMode(
+                              reactContext,
+                              key,
+                              ZoomGlobalState.DeviceLicenseKeyIdentifier,
+                              ZoomGlobalState.PublicFaceMapEncryptionKey, new FaceTecSDK.InitializeCallback() {
+                                @Override
+                                public void onCompletion(boolean b) {
+                                  WritableMap params = Arguments.createMap();
+                                  try{
+                                    params.putString("initState", b+"");
+                                  }catch (Exception e){
+                                    e.printStackTrace();
+                                  }
+                                  if(b){
+                                    params.putBoolean("successful", true);
+                                    onSuccess.invoke(params);
+                                  }
+                                  else{
+                                    onFail.invoke(params);
+                                    params.putBoolean("successful", false);
+                                  }
+                                }
+                              }
+                      );
+                    }
+                  }
+                  else {
+                    onFail.invoke("sessionToken invalid, can't get key");
+                  }
+                }
+                catch(JSONException e) {
+                  e.printStackTrace();
+                  Log.d("FaceTecSDKSampleApp", "Exception raised while attempting to parse JSON result.");
+                  onFail.invoke("sessionToken invalid, can't get key");
+                }
+              }
+
+              @Override
+              public void onError(ANError anError) {
+
+              }
+            });
   }
 
   @ReactMethod
