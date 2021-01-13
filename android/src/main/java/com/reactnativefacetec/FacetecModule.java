@@ -84,7 +84,7 @@ public class FacetecModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void Init(Callback onSuccess, Callback onFail, String token) {
+  public void Init(String token, Callback onSuccess, Callback onFail) {
     this.onSuccess = onSuccess;
     this.onFail = onFail;
 
@@ -145,6 +145,38 @@ public class FacetecModule extends ReactContextBaseJavaModule {
 
               }
             });
+  }
+
+
+  @ReactMethod
+  public void Init(Callback onSuccess, Callback onFail) {
+    this.onSuccess = onSuccess;
+    this.onFail = onFail;
+
+    FaceTecSDK.initializeInProductionMode(
+            reactContext,
+            ZoomGlobalState.ProductionKeyText,
+            ZoomGlobalState.DeviceLicenseKeyIdentifier,
+            ZoomGlobalState.PublicFaceMapEncryptionKey, new FaceTecSDK.InitializeCallback() {
+              @Override
+              public void onCompletion(boolean b) {
+                WritableMap params = Arguments.createMap();
+                try{
+                  params.putString("initState", b+"");
+                }catch (Exception e){
+                  e.printStackTrace();
+                }
+                if(b){
+                  params.putBoolean("successful", true);
+                  onSuccess.invoke(params);
+                }
+                else{
+                  onFail.invoke(params);
+                  params.putBoolean("successful", false);
+                }
+              }
+            }
+    );
   }
 
   @ReactMethod
