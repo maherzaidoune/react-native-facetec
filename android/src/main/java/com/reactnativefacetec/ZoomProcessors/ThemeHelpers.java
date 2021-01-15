@@ -33,18 +33,20 @@ public class ThemeHelpers {
     int primaryColor = Color.parseColor("#1797E3"); // white
     int backgroundColor = Color.parseColor("#FFFFFF"); // navy
     int numio = Color.parseColor("#42C560");
-    int buttonText = Color.parseColor("#414141");
+    int buttonText = Color.parseColor("#FFFFFF");
+    int grayText = Color.parseColor("#7c7c7c");
 
     // Overlay Customization
     currentCustomization.getOverlayCustomization().backgroundColor = backgroundColor;
     currentCustomization.getOverlayCustomization().showBrandingImage = true;
+    currentCustomization.getOverlayCustomization().brandingImage = R.drawable.whitebackground;
     // Guidance Customization
     currentCustomization.getGuidanceCustomization().backgroundColors = backgroundColor;
     currentCustomization.getGuidanceCustomization().foregroundColor = primaryColor;
     currentCustomization.getGuidanceCustomization().headerTextSize = 24;
     currentCustomization.getGuidanceCustomization().headerTextSpacing = 0.05f;
     currentCustomization.getGuidanceCustomization().subtextTextSize = 14;
-    currentCustomization.getGuidanceCustomization().subtextTextSpacing = 0f;
+    currentCustomization.getGuidanceCustomization().subtextTextSpacing = 0.f;
     currentCustomization.getGuidanceCustomization().buttonTextSize = 16;
     currentCustomization.getGuidanceCustomization().buttonTextSpacing = 0.05f;
     currentCustomization.getGuidanceCustomization().buttonTextNormalColor = buttonText;
@@ -62,7 +64,7 @@ public class ThemeHelpers {
     currentCustomization.getGuidanceCustomization().readyScreenOvalFillColor = Color.parseColor("#4DFFFFFF");
     currentCustomization.getGuidanceCustomization().readyScreenTextBackgroundColor = backgroundColor;
     currentCustomization.getGuidanceCustomization().readyScreenTextBackgroundCornerRadius = 2;
-    currentCustomization.getGuidanceCustomization().readyScreenSubtextTextColor = numio;
+    currentCustomization.getGuidanceCustomization().readyScreenSubtextTextColor = grayText;
 
     currentCustomization.getGuidanceCustomization().retryScreenImageBorderColor = primaryColor;
     currentCustomization.getGuidanceCustomization().retryScreenImageBorderWidth = 2;
@@ -72,7 +74,7 @@ public class ThemeHelpers {
     currentCustomization.getGuidanceCustomization().retryScreenSlideshowInterval = 1500;
     currentCustomization.getGuidanceCustomization().enableRetryScreenSlideshowShuffle = false;
     currentCustomization.getGuidanceCustomization().enableRetryScreenBulletedInstructions = false;
-    currentCustomization.getGuidanceCustomization().cameraPermissionsScreenImage = R.drawable.camera_white_navy;
+    currentCustomization.getGuidanceCustomization().cameraPermissionsScreenImage = R.drawable.whitebackground;
     // ID Scan Customization
     currentCustomization.getIdScanCustomization().showSelectionScreenBrandingImage = false;
     currentCustomization.getIdScanCustomization().selectionScreenBrandingImage = 0;
@@ -154,7 +156,7 @@ public class ThemeHelpers {
     currentCustomization.getOvalCustomization().progressColor1 = Color.parseColor("#BFFFFFFF");
     currentCustomization.getOvalCustomization().progressColor2 = Color.parseColor("#BFFFFFFF");
     // Cancel Button Customization
-    currentCustomization.getCancelButtonCustomization().customImage = R.drawable.cancel_navy;
+    currentCustomization.getCancelButtonCustomization().customImage = R.drawable.whitebackground;
     return currentCustomization;
   }
 
@@ -164,7 +166,9 @@ public class ThemeHelpers {
     int primaryColor = Color.parseColor("#1797E3"); // white
     int backgroundColor = Color.parseColor("#FFFFFF"); // navy
     int numio = Color.parseColor("#42C560");
-    int buttonText = Color.parseColor("#414141");
+    int buttonText = Color.parseColor("#FFFFFF");
+    int grayText = Color.parseColor("#7c7c7c");
+
     int[] retryScreenSlideshowImages = new int[]{R.drawable.zoom_ideal_1, R.drawable.zoom_ideal_2, R.drawable.zoom_ideal_3, R.drawable.zoom_ideal_4, R.drawable.zoom_ideal_5};
 
     // Overlay Customization
@@ -176,6 +180,7 @@ public class ThemeHelpers {
     currentLowLightCustomization.getGuidanceCustomization().headerTextSize = 24;
     currentLowLightCustomization.getGuidanceCustomization().headerTextSpacing = 0.05f;
     currentLowLightCustomization.getGuidanceCustomization().subtextTextSize = 14;
+    currentLowLightCustomization.getGuidanceCustomization().subtextTextSpacing = 0f;
     currentLowLightCustomization.getGuidanceCustomization().subtextTextSpacing = 0f;
     currentLowLightCustomization.getGuidanceCustomization().buttonTextSize = 16;
     currentLowLightCustomization.getGuidanceCustomization().buttonTextSpacing = 0.05f;
@@ -194,7 +199,7 @@ public class ThemeHelpers {
     currentLowLightCustomization.getGuidanceCustomization().readyScreenOvalFillColor = Color.parseColor("#4DFFFFFF");
     currentLowLightCustomization.getGuidanceCustomization().readyScreenTextBackgroundColor = backgroundColor;
     currentLowLightCustomization.getGuidanceCustomization().readyScreenTextBackgroundCornerRadius = 2;
-    currentLowLightCustomization.getGuidanceCustomization().readyScreenSubtextTextColor = numio;
+    currentLowLightCustomization.getGuidanceCustomization().readyScreenSubtextTextColor = grayText;
 
     currentLowLightCustomization.getGuidanceCustomization().retryScreenImageBorderColor = primaryColor;
     currentLowLightCustomization.getGuidanceCustomization().retryScreenImageBorderWidth = 2;
@@ -204,7 +209,7 @@ public class ThemeHelpers {
     currentLowLightCustomization.getGuidanceCustomization().retryScreenSlideshowInterval = 1500;
     currentLowLightCustomization.getGuidanceCustomization().enableRetryScreenSlideshowShuffle = false;
     currentLowLightCustomization.getGuidanceCustomization().enableRetryScreenBulletedInstructions = false;
-    currentLowLightCustomization.getGuidanceCustomization().cameraPermissionsScreenImage = R.drawable.camera_white_navy;
+    currentLowLightCustomization.getGuidanceCustomization().cameraPermissionsScreenImage = R.drawable.whitebackground;
     // ID Scan Customization
     currentLowLightCustomization.getIdScanCustomization().showSelectionScreenBrandingImage = false;
     currentLowLightCustomization.getIdScanCustomization().selectionScreenBrandingImage = 0;
@@ -286,9 +291,9 @@ public class ThemeHelpers {
     currentLowLightCustomization.getOvalCustomization().progressColor1 = Color.parseColor("#BFFFFFFF");
     currentLowLightCustomization.getOvalCustomization().progressColor2 = Color.parseColor("#BFFFFFFF");
     // Cancel Button Customization
-    currentLowLightCustomization.getCancelButtonCustomization().customImage = R.drawable.cancel_navy;
+    currentLowLightCustomization.getCancelButtonCustomization().customImage = R.drawable.whitebackground;
 
-    currentLowLightCustomization.getCancelButtonCustomization().customImage = R.drawable.cancel_navy;
+    currentLowLightCustomization.getCancelButtonCustomization().customImage = R.drawable.whitebackground;
 
     return currentLowLightCustomization;
   }

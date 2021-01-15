@@ -301,7 +301,7 @@ public class PhotoIDMatchProcessor extends Processor implements FaceTecFaceScanP
             try{
               obj.put("responseJSON", responseJSON.toString());
               obj.put("FrontImagesCompressedBase64", frontImagesCompressedBase64.toString());
-              obj.put("BackImagesCompressedBase64", backImagesCompressedBase64.toString());
+//              obj.put("BackImagesCompressedBase64", backImagesCompressedBase64.toString());
               sessionTokenSuccessCallback.onSuccess(obj.toString());
             }catch (Exception e){
               e.printStackTrace();

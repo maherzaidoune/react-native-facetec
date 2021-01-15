@@ -1,4 +1,27 @@
 <resources>
 <!--  <string name="zoom_instructions_header_ready" >RECOVER YOUR NUMIO ACCOUNT</string>-->
-  <string name="zoom_instructions_header_ready" >GET READY FOR YOUR 3D FACE SCAN</string>
+  <string name="zoom_instructions_header_ready" >3D Face Scan</string>
+  <string name="zoom_instructions_message_ready">Please frame your face in the small oval, then the big oval.</string>
+  <string name="zoom_action_im_ready">I\'m Ready</string>
+  <string name="zoom_action_select_id_card">Photo ID</string>
+  <string name="zoom_action_select_passport">Passport</string>
+    <string name="zoom_action_retake_photo">Retake</string>
+    <string name="FaceTec_camera_permission_header">Please enable your selfie camera</string>
+    <string name="zoom_camera_permission_header"></string>
+    <string name="zoom_camera_permission_message"></string>
+    <string name="FaceTec_camera_permission_message">Please enable your selfie camera</string>
+    <string name="zoom_camera_permission_enable_camera"></string>
+    <string name="zoom_action_accept_photo">Accept</string>
+    <string name="FaceTec_camera_permission_enable_camera">Enable Camera</string>
+    <string name="FaceTec_camera_permission_message_enroll"></string>
+  <string name="FaceTec_action_im_ready">I\'m Ready</string>
+  <string name="FaceTec_action_select_id_card">Photo ID</string>
+  <string name="FaceTec_action_select_passport">Passport</string>
+    <string name="FaceTec_action_retake_photo">Retake</string>
+    <string name="FaceTec_action_accept_photo">Accept</string>
+    <string name="FaceTec_action_take_photo">Take Photo</string>
+  <string name="FaceTec_camera_permission_message_auth"></string>
+  <string name="FaceTec_action_ok">Ok</string>
+  
+
 </resources>
